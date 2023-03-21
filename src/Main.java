@@ -1,4 +1,6 @@
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
@@ -16,6 +18,26 @@ public class Main {
             );
         }
 
-        
+        int numberOfMinors = (int) persons.stream()
+                .filter(person -> person.getAge() < 18)
+                .count();
+        System.out.println("В Лондоне " + numberOfMinors + " несовершеннолетних.");
+
+        List<String> conscripts = persons.stream()
+                .filter(person -> person.getSex() == Sex.MAN)
+                .filter(person -> person.getAge() >= 18)
+                .filter(person -> person.getAge() <= 27)
+                .map(Person::getFamily)
+                .collect(Collectors.toList());
+        System.out.println(conscripts);
+
+        List<Person> workable = persons.stream()
+                .filter(person -> person.getEducation() == Education.HIGHER)
+                .filter(person -> person.getAge() >= 18)
+                .filter(person -> (person.getSex() == Sex.MAN & person.getAge() <= 65) |
+                        (person.getSex() == Sex.WOMAN & person.getAge() <= 60))
+                .sorted(Comparator.comparing(Person::getFamily))
+                .collect(Collectors.toList());
+        System.out.println(workable);
     }
 }
